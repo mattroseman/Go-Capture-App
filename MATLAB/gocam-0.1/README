@@ -1,0 +1,15 @@
+GoCam - version 0.1
+
+This is the first version of gocam - an automatic system for
+extracting go positions from photographs.  It is implemented in
+MATLAB, and the main script can be found in 'gocam.m'.  The script
+runs the system on six test images from directory 'img'.
+For more details, see the following web page.
+
+http://www.cis.hut.fi/thirsima/gocam/
+
+-- 
+Teemu Hirsimäki 
+<teemu.hirsimaki@hut.fi>
+
+

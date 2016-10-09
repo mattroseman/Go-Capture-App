@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,32 +126,70 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void scoreGame() {
-        // create json from image and send to server @score game url
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Title");
+        JSONObject jo = new JSONObject();
+        try {
+            jo.put("image", getStringImage(((BitmapDrawable) iv.getDrawable()).getBitmap()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //Showing the progress dialog
+        final ProgressDialog loading = ProgressDialog.show(this,"Analyzing...","Please wait...",false,false);
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, "http://stohio.ngrok.io/api/score", jo,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        String s = "";
+                        String encodedImage = "";
+                        //Disimissing the progress dialog
+                        loading.dismiss();
+                        //Showing toast message of the response
+                        try {
+                            s = response.getString("status");
+                            encodedImage = response.getString("image");
+                            byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+                            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            // disply image
+                            iv.setImageBitmap(decodedByte);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(MainActivity.this, s , Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        //Dismissing the progress dialog
+                        loading.dismiss();
 
-        final EditText white_capture_input = new EditText(this);
-        white_capture_input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        builder.setView(white_capture_input);
-        final EditText black_capture_input = new EditText(this);
-        black_capture_input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        builder.setView(black_capture_input);
+                        //Showing toast
+                        Toast.makeText(MainActivity.this, volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        jsonRequest.setRetryPolicy(new RetryPolicy() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                white_captures = white_capture_input.getText().toString();
-                black_captures = black_capture_input.getText().toString();
+            public int getCurrentTimeout() {
+                return 60000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
 
-        builder.show();
+        //Creating a Request Queue
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        //Adding request to the queue
+        requestQueue.add(jsonRequest);
     }
 
     private void takePhoto(){

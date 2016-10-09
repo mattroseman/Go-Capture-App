@@ -25,7 +25,7 @@ def handle_scoring():
 	# process the game
 	url = imago.process_game('accept.jpg', 0)
 
-	json = {'status' : 'success', 'white_score' : '20', 'black_score' : '10'}
+        json = {'status' : 'success', 'image': 'heymatt.jpg'}
 
 	return jsonify(json)
 

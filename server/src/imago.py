@@ -81,7 +81,7 @@ def process_game(files, param):
     # upload the game
     if param == 1:
         print "IN PARAM UPLOAD"
-        url = 'http://eidogo.com/#url:https://bace4b26.ngrok.io/'
+        url = 'http://eidogo.com/#url:https://stohio.ngrok.io/sgf/'
         print url + game_file
         return url + game_file
     # score the game

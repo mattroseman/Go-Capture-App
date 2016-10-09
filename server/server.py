@@ -7,7 +7,7 @@ import requests
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = '/home/matthew/Programming/Hackathons/KHE/server/Go-Capture-App/server'
+UPLOAD_FOLDER = '/home/matthew/Programming/Hackathons/KHE/server/Go-Capture-App/server/sgf'
 ALLOWED_EXTENSIONS = set(['txt', 'sgf', 'png', 'jpg', 'jpeg', 'gif', 'wav'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 

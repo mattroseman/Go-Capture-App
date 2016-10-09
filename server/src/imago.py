@@ -20,6 +20,9 @@ import intrsc
 import gridf_new as gridf
 import output
 
+import territory
+import draw
+
 def argument_parser():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('files', metavar='file', nargs='+',
@@ -88,6 +91,8 @@ def process_game(files, param):
     else:
         # get matrix from board
         print (board)
+        board_territory = territory.get_territory(board)
+        draw.draw_territory(board_territory, intersections, image)
         score = 5
         return score
 

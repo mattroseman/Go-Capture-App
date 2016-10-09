@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             s = response.getString("status");
                             img_filename = response.getString("image");
-                            String img_url = "stohio.ngrok.io/sgf/" + img_filename;
+                            String img_url = "http://stohio.ngrok.io/sgf/" + img_filename;
                             Bitmap img = getBitmapFromURL(img_url);
                             // disply image
                             iv.setImageBitmap(img);

@@ -109,6 +109,33 @@ def board(image, intersections, show_all, do_something, logger):
     clusters[0] = [(p[1], 'B') for p in clusters[0]]
     clusters[1] = [(p[1], '.') for p in clusters[1]]
     clusters[2] = [(p[1], 'W') for p in clusters[2]]
+#    for i in clusters[2]:
+#        val = i[0]
+#
+#        row = int(val/19)
+#        displacement = val % 19
+#
+#        x = intersections[row][displacement][0]
+#        y = intersections[row][displacement][1]
+#        print x, y
+#
+#        draw = ImageDraw.Draw(image_c)
+#        draw.line((x-10, y-10) + (x+10, y+10), fill=40)
+#    for i in clusters[0]:
+#        val = i[0]
+#
+#        row = int(val/19)
+#        displacement = val % 19
+#
+#        x = intersections[row][displacement][0]
+#        y = intersections[row][displacement][1]
+#        print x, y
+#
+#        draw = ImageDraw.Draw(image_c)
+#        draw.line((x-10, y-10) + (x+10, y+10), fill=240)
+#
+#    del draw
+#    image_c.save("sgf/heymatt.jpg")
 
     board_rl = sum(clusters, [])
     board_rl.sort()

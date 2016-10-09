@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 # route to handle scoring the game
 @app.route('/api/score', methods=['POST'])
-def testing():
+def handle_scoring():
 	data = request.get_json(force=True)
 	im = Image.open(BytesIO(base64.b64decode(data['image'])))
 	im.save('accept.jpg', 'JPEG')
@@ -24,15 +24,17 @@ def testing():
 
 # route to handle uploading the image
 @app.route('/api/upload', methods=['POST'])
-def testing():
+def handle_upload():
 	data = request.get_json(force=True)
 	im = Image.open(BytesIO(base64.b64decode(data['image'])))
 	im.save('accept.jpg', 'JPEG')
 
 	# process the game
 	url = imago.process_game('accept.jpg', 1)
+	print url
 
 	json = {'status' : 'success', 'url' : url}
+	print json
 
 	return jsonify(json)
 

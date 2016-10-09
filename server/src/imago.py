@@ -75,12 +75,14 @@ def process_game(files, param):
     intersections = intrsc.b_intersects(image, lines, False, do_something, logger)
     board = intrsc.board(image, intersections, False, do_something, logger)
 
-    game_file = str(time.time())
-    with open(game_file, "w+") as f:
+    game_file = str(int(time.time())) + '.sgf'
+    with open('sgf/' + game_file, "w+") as f:
         f.write(board.asSGFsetPos())
     # upload the game
     if param == 1:
-        url = 'http://eidogo.com/#url:http://stoh.io/'
+        print "IN PARAM UPLOAD"
+        url = 'http://eidogo.com/#url:https://bace4b26.ngrok.io/'
+        print url + game_file
         return url + game_file
     # score the game
     else:

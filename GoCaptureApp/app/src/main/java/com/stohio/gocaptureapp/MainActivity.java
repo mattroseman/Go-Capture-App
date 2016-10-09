@@ -38,8 +38,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Hashtable;
+import java.net.HttpURLConnection;
 
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -125,6 +127,22 @@ public class MainActivity extends AppCompatActivity {
         buttons.addView(upload);
     }
 
+    public Bitmap getBitmapFromURL(String src) {
+        try {
+            java.net.URL url = new java.net.URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private void scoreGame() {
         JSONObject jo = new JSONObject();
         try {
@@ -139,17 +157,18 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         String s = "";
-                        String encodedImage = "";
+                        String img_filename = "";
                         //Disimissing the progress dialog
                         loading.dismiss();
                         //Showing toast message of the response
                         try {
                             s = response.getString("status");
-                            encodedImage = response.getString("image");
-                            byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-                            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            img_filename = response.getString("image");
+                            String img_url = "stohio.ngrok.io/sgf/" + img_filename;
+                            Bitmap img = getBitmapFromURL(img_url);
                             // disply image
-                            iv.setImageBitmap(decodedByte);
+                            iv.setImageBitmap(img);
+                            iv.invalidate();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

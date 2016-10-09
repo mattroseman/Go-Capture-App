@@ -86,6 +86,8 @@ def process_game(files, param):
         return url + game_file
     # score the game
     else:
+        # get matrix from board
+        print (board)
         score = 5
         return score
 

@@ -31,6 +31,7 @@ import android.content.pm.PackageManager;
 import android.content.DialogInterface;
 import android.text.InputType;
 import android.util.Base64;
+import android.content.ActivityNotFoundException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -50,6 +51,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.RetryPolicy;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -214,8 +216,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         //Showing the progress dialog
-        final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, "http://fb52ef05.ngrok.io/api/upload", jo,
+        final ProgressDialog loading = ProgressDialog.show(this,"Analyzing...","Please wait...",false,false);
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, "http://stohio.ngrok.io/api/upload", jo,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -225,6 +227,17 @@ public class MainActivity extends AppCompatActivity {
                         //Showing toast message of the response
                         try {
                             s = response.getString("status");
+                            //s = response.getString("url");
+                            String url = response.getString("url");
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.setPackage("com.android.chrome");
+                            try {
+                                startActivity(intent);
+                            } catch (ActivityNotFoundException ex) {
+                                intent.setPackage(null);
+                                startActivity(intent);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -242,6 +255,23 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        jsonRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 60000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
 
         //Creating a Request Queue
         RequestQueue requestQueue = Volley.newRequestQueue(this);

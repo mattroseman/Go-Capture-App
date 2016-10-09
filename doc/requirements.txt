@@ -1,4 +1,0 @@
-numpy
-sphinx
-sphinx-argparse
-mock

@@ -1,7 +1,0 @@
-#!/bin/bash
-set -e
-for F in src/*.py; do
-    if egrep -q '^import +unittest' $F; then
-        python $F
-    fi
-done
